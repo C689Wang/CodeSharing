@@ -15,12 +15,12 @@ public class Code {
 
     @Id
     @Column
-    private long codeId;
+    @JsonIgnore
+    private String codeId;
 
     @Column
     private String code;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column
     @JsonIgnore
     private LocalDateTime date;
@@ -37,18 +37,10 @@ public class Code {
         this.code = code;
     }
 
-    @JsonCreator
-    public Code(
-            @JsonProperty("code") String code,
-            @JsonProperty("date") LocalDateTime date)
-    {
-        this.code = code;
-        this.date = date;
-    }
 
     @JsonCreator
     public Code(
-            @JsonProperty("codeId") long codeId,
+            @JsonProperty("codeId") String codeId,
             @JsonProperty("code") String code,
             @JsonProperty("date") LocalDateTime date)
     {
@@ -64,7 +56,9 @@ public class Code {
     public LocalDateTime getDate() {
         return date;
     }
-    public long getCodeId() { return codeId;}
+
+    @JsonIgnore
+    public String getCodeId() { return codeId;}
 
     public void setCode(String code) {
         this.code = code;
@@ -74,7 +68,7 @@ public class Code {
         this.date = date;
     }
 
-    public void setCodeId(long codeId) {
+    public void setCodeId(String codeId) {
         this.codeId = codeId;
     }
 

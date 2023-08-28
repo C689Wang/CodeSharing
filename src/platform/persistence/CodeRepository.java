@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface CodeRepository extends JpaRepository<Code, Long> {
-    List<Code> findByDate();
-    Optional<Code> findByCodeId(Long codeId);
+public interface CodeRepository extends JpaRepository<Code, String> {
+    List<Code> findByOrderByDateDesc();
+    Optional<Code> findByCodeId(String codeId);
+    boolean existsByCodeId(String codeId);
 
 }

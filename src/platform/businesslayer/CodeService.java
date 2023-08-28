@@ -17,14 +17,19 @@ public class CodeService {
         this.repository = repository;
     }
 
-    public Code findCodeById(Long id) {
+    public Code findCodeById(String id) {
         Optional<Code> codeSnippet = repository.findByCodeId(id);
-        return codeSnippet.orElse(null);
+        return codeSnippet.orElse(new Code());
     }
 
     public List<Code> findCodeSnippets() {
-        return repository.findByDate();
+        return repository.findByOrderByDateDesc();
     }
+
+    public boolean codeExists(String codeId) {
+        return repository.existsByCodeId(codeId);
+    }
+
 
     public Code saveCode(Code code) {
         return repository.save(code);
