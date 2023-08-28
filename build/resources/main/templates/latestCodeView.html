@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Latest</title>
+    <link rel="stylesheet"
+          href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 <h1>Welcome!</h1>
 <div th:each="codeSnippet : ${codeSnippets}" >
     <span id="load_date" th:text="${codeSnippet.getReadableDate()}"></span>
-    <pre id="code_snippet" th:text="${codeSnippet.code}"></pre>
+    <pre id="code_snippet">
+        <code id="code" th:text="${codeSnippet.code}"></code>
+    </pre>
 </div>
 </body>
 </html>

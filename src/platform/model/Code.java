@@ -5,11 +5,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import platform.utl.DateFormatter;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+
+@Entity
+@Table(name = "codes")
 public class Code {
 
+    @Id
+    @Column
+    @JsonIgnore
+    private String codeId;
+
+    @Column
     private String code;
+
+    @Column
     @JsonIgnore
     private LocalDateTime date;
 
@@ -25,11 +37,14 @@ public class Code {
         this.code = code;
     }
 
+
     @JsonCreator
     public Code(
+            @JsonProperty("codeId") String codeId,
             @JsonProperty("code") String code,
             @JsonProperty("date") LocalDateTime date)
     {
+        this.codeId = codeId;
         this.code = code;
         this.date = date;
     }
@@ -42,12 +57,19 @@ public class Code {
         return date;
     }
 
+    @JsonIgnore
+    public String getCodeId() { return codeId;}
+
     public void setCode(String code) {
         this.code = code;
     }
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public void setCodeId(String codeId) {
+        this.codeId = codeId;
     }
 
 }
