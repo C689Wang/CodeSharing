@@ -7,29 +7,27 @@ import platform.businesslayer.CodeService;
 import platform.model.Code;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class CodeController {
     @Autowired
     CodeService codeService;
-    private final Map<String, Code> codeSnippets = new ConcurrentHashMap<>();
-    private final AtomicInteger id = new AtomicInteger(0);
 
     @GetMapping(value="/code/{id}", produces="text/html")
     public ModelAndView getPage(@PathVariable String id) {
         ModelAndView modelAndView = new ModelAndView();
         if ("latest".equals(id)) {
             List<Code> latestCodes = codeService.findCodeSnippets();
-            Collections.sort(latestCodes, Comparator.comparing(Code::getDate).reversed());
-
-            // Keep only the 10 latest objects
-            int limit = Math.min(latestCodes.size(), 10);
-            List<Code> sortedCodes = latestCodes.subList(0, limit);
+//            Collections.sort(latestCodes, Comparator.comparing(Code::getDate).reversed());
+//
+//            // Keep only the 10 latest objects
+//            int limit = Math.min(latestCodes.size(), 10);
+//            List<Code> sortedCodes = latestCodes.subList(0, limit);
             modelAndView.setViewName("latestCodeView");
-            modelAndView.addObject("codeSnippets", sortedCodes);
+            modelAndView.addObject("codeSnippets", latestCodes);
             return modelAndView;
         }
         if (codeService.codeExists(id)) {
@@ -59,13 +57,13 @@ public class CodeController {
     @GetMapping("/api/code/latest")
     public List<Code> getAPICode() {
         List<Code> latestCodes = codeService.findCodeSnippets();
-        Collections.sort(latestCodes, Comparator.comparing(Code::getDate).reversed());
+//        Collections.sort(latestCodes, Comparator.comparing(Code::getDate).reversed());
+//
+//        // Keep only the 10 latest objects
+//        int limit = Math.min(latestCodes.size(), 10);
+//        List<Code> sortedCodes = latestCodes.subList(0, limit);
 
-        // Keep only the 10 latest objects
-        int limit = Math.min(latestCodes.size(), 10);
-        List<Code> sortedCodes = latestCodes.subList(0, limit);
-
-        return sortedCodes;
+        return latestCodes;
     }
 
     @PostMapping(value = "/api/code/new")
@@ -75,11 +73,11 @@ public class CodeController {
         Code code =  new Code();
         code.setCode(newCode.getCode());
         code.setDate(LocalDateTime.now());
-        code.setCodeId(id.toString());
+        UUID uuid = UUID.randomUUID();
+        code.setCodeId(uuid.toString());
         codeService.saveCode(code);
         HashMap<String, String> idResponse = new HashMap<>();
-        idResponse.put("id", id.toString());
-        id.incrementAndGet();
+        idResponse.put("id", uuid.toString());
         return idResponse;
     }
 }
