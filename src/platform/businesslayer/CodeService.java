@@ -1,6 +1,7 @@
 package platform.businesslayer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import platform.model.Code;
@@ -24,7 +25,8 @@ public class CodeService {
     }
 
     public List<Code> findCodeSnippets() {
-        return repository.findPublicSnippetsByOrderByDateDesc(Sort.by(Sort.Direction.DESC, "date"));
+        return repository.findPublicSnippetsByOrderByDateDesc(PageRequest.of(0, 10,
+                Sort.by("date").descending()));
     }
 
     public boolean codeExists(String codeId) {

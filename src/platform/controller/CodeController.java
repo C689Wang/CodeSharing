@@ -44,7 +44,7 @@ public class CodeController {
                     }
                 }
                 if (code.getViewTimeIsRestricted()) {
-                    Duration duration = Duration.between( code.getDate(), LocalDateTime.now());
+                    Duration duration = Duration.between(code.getDate(), LocalDateTime.now());
                     int secondsDifference = (int) duration.getSeconds();
                     System.out.println(secondsDifference);
                     if (secondsDifference > code.getTime()) {
@@ -52,7 +52,7 @@ public class CodeController {
                         modelAndView.setViewName("error");
                         return modelAndView;
                     } else {
-                        code.setTime(code.getTime() - secondsDifference);
+                        code.setTime(code.getTimeRestriction() - secondsDifference);
                         codeService.saveCode(code);
                     }
                 }
@@ -93,13 +93,13 @@ public class CodeController {
                 }
             }
             if (retrievedCode.getViewTimeIsRestricted()) {
-                Duration duration = Duration.between(LocalDateTime.now(), retrievedCode.getDate());
-                int secondsDifference = (int) duration.getSeconds();
-                if (secondsDifference > retrievedCode.getTime()) {
+                Duration duration = Duration.between(retrievedCode.getDate(), LocalDateTime.now());
+                long secondsDifference = duration.getSeconds();
+                if (secondsDifference > retrievedCode.getTimeRestriction()) {
                     codeService.deleteCode(id);
                     return ResponseEntity.notFound().build();
                 } else {
-                    retrievedCode.setTime(retrievedCode.getTime() - secondsDifference);
+                    retrievedCode.setTime(retrievedCode.getTimeRestriction() - (int) secondsDifference);
                     codeService.saveCode(retrievedCode);
                 }
             }
@@ -132,9 +132,11 @@ public class CodeController {
         int maxViewTime = newCode.getTime();
         if (maxViewTime > 0) {
             code.setTime(maxViewTime);
+            code.setTimeRestriction(maxViewTime);
             code.setViewTimeIsRestricted(true);
         } else {
             code.setTime(0);
+            code.setTimeRestriction(0);
             code.setViewTimeIsRestricted(false);
         }
         codeService.saveCode(code);

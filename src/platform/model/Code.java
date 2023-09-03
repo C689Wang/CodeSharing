@@ -27,6 +27,9 @@ public class Code {
 
     @Column
     @JsonIgnore
+    private int timeRestriction;
+
+    @JsonIgnore
     private int time;
 
 
@@ -63,6 +66,7 @@ public class Code {
             @JsonProperty("code") String code,
             @JsonProperty("date") LocalDateTime date,
             @JsonProperty("views") int views,
+            @JsonProperty("timeRestriction") int timeRestriction,
             @JsonProperty("time") int time,
             @JsonProperty("viewsAreRestricted") boolean viewsAreRestricted,
             @JsonProperty("viewTimeIsRestricted") boolean viewTimeIsRestricted)
@@ -72,6 +76,7 @@ public class Code {
         this.code = code;
         this.date = date;
         this.views = views;
+        this.timeRestriction = timeRestriction;
         this.time = time;
         this.viewsAreRestricted = viewsAreRestricted;
         this.viewTimeIsRestricted = viewTimeIsRestricted;
@@ -89,6 +94,9 @@ public class Code {
     public String getId() { return id;}
 
     public int getViews() { return views;}
+
+    @JsonIgnore
+    public int getTimeRestriction() { return timeRestriction;}
 
     public int getTime() { return time;}
 
@@ -113,6 +121,8 @@ public class Code {
     public void setViews(int views) {
         this.views = views;
     }
+
+    public void setTimeRestriction(int timeRestriction) {this.timeRestriction = timeRestriction;}
     public void setTime(int time) {
         this.time = time;
     }
