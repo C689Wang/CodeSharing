@@ -13,10 +13,10 @@
         <div class="container">
             <div class="info">
                 <span id="load_date" th:text="${date}"></span>
-                <span id="time_restriction" th:if="${viewsAreRestricted == true}">
+                <span id="views_restriction" th:if="${viewsAreRestricted == true}">
                     Views left: <span th:text="${viewsLeft}"></span>
                 </span>
-                <span id="views_restriction" th:if="${viewTimeIsRestricted == true}">
+                <span id="time_restriction" th:if="${viewTimeIsRestricted == true}">
                     Time left: <span th:text="${timeLeft}"></span>
                 </span>
             </div>

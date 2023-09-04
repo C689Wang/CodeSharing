@@ -1,12 +1,14 @@
 package platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import platform.businesslayer.CodeService;
 import platform.model.Code;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -19,7 +21,7 @@ public class CodeController {
     CodeService codeService;
 
     @GetMapping(value="/code/{id}", produces="text/html")
-    public ModelAndView getPage(@PathVariable String id) {
+    public ModelAndView getPage(@PathVariable String id, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView();
         if ("latest".equals(id)) {
             List<Code> latestCodes = codeService.findCodeSnippets();
@@ -31,6 +33,7 @@ public class CodeController {
             Code code = codeService.findCodeById(id);
             // In case the search has gone wrong
             if (code == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 modelAndView.setViewName("error");
             } else {
                 if (code.getViewsAreRestricted()) {
@@ -39,20 +42,21 @@ public class CodeController {
                         codeService.saveCode(code);
                     } else {
                         codeService.deleteCode(id);
+                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                         modelAndView.setViewName("error");
                         return modelAndView;
                     }
                 }
                 if (code.getViewTimeIsRestricted()) {
                     Duration duration = Duration.between(code.getDate(), LocalDateTime.now());
-                    int secondsDifference = (int) duration.getSeconds();
-                    System.out.println(secondsDifference);
-                    if (secondsDifference > code.getTime()) {
+                    long secondsDifference = duration.getSeconds();
+                    if (secondsDifference > code.getTimeRestriction()) {
                         codeService.deleteCode(id);
+                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                         modelAndView.setViewName("error");
                         return modelAndView;
                     } else {
-                        code.setTime(code.getTimeRestriction() - secondsDifference);
+                        code.setTime(code.getTimeRestriction() - (int) secondsDifference);
                         codeService.saveCode(code);
                     }
                 }
@@ -61,10 +65,11 @@ public class CodeController {
                 modelAndView.addObject("code", code.getCode());
                 modelAndView.addObject("viewsAreRestricted", code.getViewsAreRestricted());
                 modelAndView.addObject("viewTimeIsRestricted", code.getViewTimeIsRestricted());
-                modelAndView.addObject("viewsLeft", code.getViews() - 1);
+                modelAndView.addObject("viewsLeft", code.getViews());
                 modelAndView.addObject("timeLeft", code.getTime());
             }
         } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             modelAndView.setViewName("error");
         }
         return modelAndView;
