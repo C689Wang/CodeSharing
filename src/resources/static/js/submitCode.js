@@ -1,6 +1,12 @@
 function send() {
+    let views = document.getElementById("views_restriction").value;
+    let time = document.getElementById("time_restriction").value
     let object = {
-        "code": document.getElementById("code_snippet").value
+        "code": document.getElementById("code_snippet").value,
+        "maxViews": views > 0 ? views : 0,
+        "maxViewTime": time > 0 ? time : 0,
+        "viewsAreRestricted": views > 0 ? true : false;
+        "viewTimeIsRestricted": time > 0 ? true, false;
     };
 
     let json = JSON.stringify(object);
