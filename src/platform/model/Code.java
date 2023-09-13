@@ -118,17 +118,41 @@ public class Code {
         this.id = id;
     }
 
+    public void initializeViews(int views) {
+        if (views > 0) {
+            setViews(views);
+            setViewsAreRestricted(true);
+        } else {
+            setViews(0);
+            setViewsAreRestricted(false);
+        }
+    }
+
     public void setViews(int views) {
         this.views = views;
     }
 
     public void setTimeRestriction(int timeRestriction) {this.timeRestriction = timeRestriction;}
+    public void initializeTime(int time) {
+        if (time > 0) {
+            setTime(time);
+            setTimeRestriction(time);
+            setViewTimeIsRestricted(true);
+        } else {
+            setTime(0);
+            setTimeRestriction(0);
+            setViewTimeIsRestricted(false);
+        }
+    }
+
     public void setTime(int time) {
         this.time = time;
     }
+
     public void setViewTimeIsRestricted(boolean viewTimeIsRestricted) {
         this.viewTimeIsRestricted = viewTimeIsRestricted;
     }
+
     public void setViewsAreRestricted(boolean viewsAreRestricted) {
         this.viewsAreRestricted = viewsAreRestricted;
     }
